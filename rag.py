@@ -16,16 +16,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 token = os.getenv("SECRET")
-endpoint = "https://models.github.ai/inference"
-model = "openai/gpt-4.1-nano"
 
+model = "gpt-4.1-nano"
 
-      
-
+    
 
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model=model, base_url=endpoint, api_key=token )
+llm = ChatOpenAI(model=model, api_key=token )
 
 
 # Load, chunk and index the contents of the blog.
@@ -41,22 +39,24 @@ loader = WebBaseLoader(
 docs = loader.load()
 
 
-
-
-
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 splits = text_splitter.split_documents(docs)
+
+
 vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings(
     model="text-embedding-3-small",
-    base_url="https://models.inference.ai.azure.com",
+    
     api_key=token,
 ))
 
 retriever = vectorstore.as_retriever()
 prompt = hub.pull("rlm/rag-prompt")
 
+print(prompt)
+
 
 def format_docs(docs):
+    print(docs)
     return "\n\n".join(doc.page_content for doc in docs)
 
 rag_chain = (
@@ -68,4 +68,9 @@ rag_chain = (
 
 
 rag_chain.invoke("What is Convolutional Neural Networks?")
+
+
+
+
+
 
