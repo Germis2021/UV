@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 token = os.getenv("SECRET")
-
+endpoint = "https://models.github.ai/inference"
 model = "gpt-4.1-nano"
 
     
@@ -45,7 +45,7 @@ splits = text_splitter.split_documents(docs)
 
 vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings(
     model="text-embedding-3-small",
-    
+    base_url="https://models.inference.ai.azure.com",
     api_key=token,
 ))
 
